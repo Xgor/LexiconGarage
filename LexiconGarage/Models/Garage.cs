@@ -1,8 +1,8 @@
 using System.Collections;
-
+using LexiconGarage.Vehicles;
 namespace LexiconGarage.Models;
 
-public class Garage<T>:IEnumerable<T>
+public class Garage<T>:IEnumerable<T> where T:Vehicle
 {
     private T[] _vehicles;
 
@@ -16,15 +16,32 @@ public class Garage<T>:IEnumerable<T>
     /// Adds to _vehicles
     /// </summary>
     /// <param name="v"></param>
-    /// <returns>true if successfull, false if failed</returns>
-    
-    public bool Add(T v)
+    /// <returns>return index if successfull, -1 if failed</returns>
+    public int AddToEmpty(T vehicle)
     {
         if (TryGetFirstEmptyIndex(out int index))
         {
-            _vehicles[index] = v;
-            return false;
+            _vehicles[index] = vehicle;
+            return index;
         }
+        return -1;
+        
+    }
+
+    public bool Remove(int index)
+    {
+        if (index < 0 || index >= _vehicles.Length) throw new ArgumentOutOfRangeException();
+        try
+        {
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
+
         return false;
     }
 
@@ -44,6 +61,13 @@ public class Garage<T>:IEnumerable<T>
         }
         return false;
     }
+
+    public T this[int i]
+    {
+        get => _vehicles[i];
+       // set => 
+    }
+    
     public IEnumerator<T> GetEnumerator()
     {
         return this.GetEnumerator();

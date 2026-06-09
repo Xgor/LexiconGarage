@@ -6,10 +6,16 @@ public class ConsoleUI : IUI
 {
     private Dictionary<string, ConsoleCommand> commands = new Dictionary<string, ConsoleCommand>();
     private bool _programRunning;
-    public void Init()
+    public ConsoleUI()
     {
-        commands.Add("1",new ConsoleCommand(testCommand, "this is a testcommand"));
-        commands.Add("q",new ConsoleCommand(ExitProgram, "Exit program"));
+        // Add test commands, Should be added externally with AddCommand later
+        AddCommand("1", new ConsoleCommand(testCommand, "this is a testcommand"));
+        AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));
+    }
+
+    public void AddCommand(string key, ConsoleCommand command)
+    {
+        commands.Add(key,command);
     }
     
 #region Setup
