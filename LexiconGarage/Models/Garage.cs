@@ -1,12 +1,17 @@
 using System.Collections;
 
-namespace LexiconGarage;
+namespace LexiconGarage.Models;
 
-using LexiconGarage.Vehicles;
 public class Garage<T>:IEnumerable<T>
 {
     private T[] _vehicles;
 
+    
+    public Garage(int size)
+    {
+        _vehicles = new T[size];
+    }
+    
     /// <summary>
     /// Adds to _vehicles
     /// </summary>

@@ -1,6 +1,10 @@
 ﻿
 using LexiconGarage;
-using LexiconGarage.Vehicles;
+using LexiconGarage.Interfaces;
+using LexiconGarage.Models;
 
-Console.WriteLine("Hello, World!");
-//var g = new Garage<Vehicle>()
+Console.WriteLine("Program startup");
+IUI ui = new ConsoleUI();
+ui.Init();
+ui.Run();
+
