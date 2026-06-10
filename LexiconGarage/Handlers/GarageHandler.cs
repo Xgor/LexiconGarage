@@ -36,9 +36,12 @@ public class GarageHandler: IGarageHandler
         throw new NotImplementedException();
     }
 
-    public string[] GetAllVehicleInformation()
+    public IEnumerable<string> GetAllVehicleInformation()
     {
-        throw new NotImplementedException();
+        foreach (Vehicle vehicle in _garage)
+        {
+            yield return vehicle.ToString();
+        }
     }
 
     public IEnumerable<KeyValuePair<string,int>> GetVehicleCount()
@@ -48,11 +51,24 @@ public class GarageHandler: IGarageHandler
 
     public void AutoFillGarage()
     {
-        if (_garage == null) new Garage<Vehicle>(10);
-        
-        Random.Shared.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZ",3);
-        Random.Shared.GetString("0123456789",3);
-        throw new NotImplementedException();
+        if (_garage == null) _garage = new Garage<Vehicle>(10);
+        var rand = new Random();
+        while (!_garage.IsFull)
+        {
+            string registrationNumber = "";
+            registrationNumber += rand.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 3);
+            registrationNumber += rand.GetString("0123456789", 3);
+            switch (rand.Next(2))
+            {
+                case 0:
+                    _garage.AddToEmpty(new Car(registrationNumber));
+                    break;
+                case 1:
+                    _garage.AddToEmpty(new Airplane(registrationNumber));
+                    break;
+            }
+        }
+
     }
 
     public Vehicle FindByRegistrationPlate(string registrationNr)

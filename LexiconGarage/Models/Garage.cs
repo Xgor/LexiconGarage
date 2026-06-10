@@ -105,7 +105,10 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     
     public IEnumerator<T> GetEnumerator()
     {
-        return this.GetEnumerator();
+        foreach (T vehicle in _values)
+        {
+            yield return vehicle;
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()

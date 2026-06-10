@@ -7,7 +7,7 @@ public interface IGarageHandler
    void CreateNewGarage(int size);
    int AddVehicleToCurrentGarage(Vehicle vehicle);
    void RemoveFromCurrentGarage(string registrationNr);
-   string[] GetAllVehicleInformation();
+   IEnumerable<string> GetAllVehicleInformation();
    IEnumerable<KeyValuePair<string,int>> GetVehicleCount();
    void AutoFillGarage();
    Vehicle FindByRegistrationPlate(string registrationNr);

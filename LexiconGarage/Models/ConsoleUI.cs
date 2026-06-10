@@ -11,7 +11,8 @@ public class ConsoleUI : IUI
     {
         _garageHandler = garageHandler;
         // Add test commands, Should be added externally with AddCommand later
-        AddCommand("1", new ConsoleCommand(testCommand, "this is a testcommand"));
+        AddCommand("1", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
+        AddCommand("2", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
         AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));
     }
 
@@ -70,6 +71,20 @@ public class ConsoleUI : IUI
     {
         Console.WriteLine("bye bye");
         _programRunning = false;
+    }
+
+    public void AutoFillGarage()
+    {
+        _garageHandler.AutoFillGarage();
+        Console.WriteLine("Garage Filled");
+    }
+
+    public void ListAllVehiclesInGarage()
+    {
+        foreach (string s in _garageHandler.GetAllVehicleInformation())
+        {
+            Console.WriteLine(s);
+        }
     }
     #endregion
 }
