@@ -1,4 +1,5 @@
 using LexiconGarage.Interfaces;
+using LexiconGarage.Records;
 
 namespace LexiconGarage.Models;
 
@@ -86,5 +87,6 @@ public class ConsoleUI : IUI
             Console.WriteLine(s);
         }
     }
+    
     #endregion
 }

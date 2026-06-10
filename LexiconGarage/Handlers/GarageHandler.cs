@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Models;
 using LexiconGarage.Vehicles;
@@ -52,23 +53,18 @@ public class GarageHandler: IGarageHandler
     public void AutoFillGarage()
     {
         if (_garage == null) _garage = new Garage<Vehicle>(10);
-        var rand = new Random();
         while (!_garage.IsFull)
         {
-            string registrationNumber = "";
-            registrationNumber += rand.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 3);
-            registrationNumber += rand.GetString("0123456789", 3);
-            switch (rand.Next(2))
-            {
-                case 0:
-                    _garage.AddToEmpty(new Car(registrationNumber));
-                    break;
-                case 1:
-                    _garage.AddToEmpty(new Airplane(registrationNumber));
-                    break;
-            }
-        }
 
+            string registrationNumber = "";
+            do
+            {
+                registrationNumber = RandomVehicleHelper.GenerateRandomLicenceNumber();
+            } while (_garage.GetByRegistrationNumber(registrationNumber) != null);
+
+            _garage.AddToEmpty(RandomVehicleHelper.GenerateRandomVehicle(registrationNumber));
+
+        }
     }
 
     public Vehicle FindByRegistrationPlate(string registrationNr)
