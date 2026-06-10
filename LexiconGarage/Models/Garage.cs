@@ -5,7 +5,7 @@ namespace LexiconGarage.Models;
 public class Garage<T>:IEnumerable<T> where T:Vehicle
 {
     private T?[] _values;
-    public int valueCount { get; private set; }
+    public int filledValueCount { get; private set; }
     
     public Garage(int size)
     {
@@ -22,12 +22,15 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
         if (TryGetFirstEmptyIndex(out int index))
         {
             _values[index] = vehicle;
-            valueCount++;
+            filledValueCount++;
             return index;
         }
         return -1;
-        
     }
+
+    public bool IsEmpty => filledValueCount == 0;
+    public bool IsFull => _values.Length == filledValueCount;
+    public int EmptySlots => _values.Length - filledValueCount;
 
     public T? RemoveAndGet(string registrationNumber)
     {
@@ -41,7 +44,7 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
         {
             if (_values[index] != null)
             {
-                valueCount--;
+                filledValueCount--;
                 return _values[index];
             }
         }
