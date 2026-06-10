@@ -4,12 +4,12 @@ namespace LexiconGarage.Models;
 
 public class Garage<T>:IEnumerable<T> where T:Vehicle
 {
-    private T[] _vehicles;
-
+    private T?[] _values;
+    public int valueCount { get; private set; }
     
     public Garage(int size)
     {
-        _vehicles = new T[size];
+        _values = new T[size];
     }
     
     /// <summary>
@@ -21,28 +21,42 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     {
         if (TryGetFirstEmptyIndex(out int index))
         {
-            _vehicles[index] = vehicle;
+            _values[index] = vehicle;
+            valueCount++;
             return index;
         }
         return -1;
         
     }
 
-    public bool Remove(int index)
+    public T? RemoveAndGet(string registrationNumber)
     {
-        if (index < 0 || index >= _vehicles.Length) throw new ArgumentOutOfRangeException();
+        return RemoveAndGet(GetIndexByRegistrationNumber(registrationNumber)); // TODO Fix so it handles incorrect registration
+    }
+
+    public T? RemoveAndGet(int index)
+    {
+        if (index < 0 || index >= _values.Length) throw new ArgumentOutOfRangeException();
         try
         {
-            
+            if (_values[index] != null)
+            {
+                valueCount--;
+                return _values[index];
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
-        
 
-        return false;
+        return null; 
+    }
+    
+    public bool Remove(int index)
+    {
+        return RemoveAndGet(index) != null;
     }
 
     /// <summary>
@@ -52,9 +66,9 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     /// <returns>true if found. false if none found</returns>
     private bool TryGetFirstEmptyIndex(out int index)
     {
-        for (index = 0; index < _vehicles.Length; index++)
+        for (index = 0; index < _values.Length; index++)
         {
-            if (_vehicles[index] == null)
+            if (_values[index] == null)
             {
                 return true;
             }
@@ -62,11 +76,29 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
         return false;
     }
 
+    public int GetIndexByRegistrationNumber(string registrationNumber)
+    {
+        T? v = GetByRegistrationNumber(registrationNumber);
+        if (v != null)
+            return _values.IndexOf(v);
+        return -1;
+    }
+
+    public T? GetByRegistrationNumber(string registrationNumber)
+    {
+        return _values.FirstOrDefault(v => v.RegistrationNumber == registrationNumber);
+    }
+
+    public T GetByIndex(int index)
+    {
+        return _values[index];
+    }
+/*
     public T this[int i]
     {
         get => _vehicles[i];
-       // set => 
-    }
+        // set => _vehicles[i] = value;
+    } */
     
     public IEnumerator<T> GetEnumerator()
     {
@@ -75,6 +107,6 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _vehicles.GetEnumerator();
+        return _values.GetEnumerator();
     }
 }

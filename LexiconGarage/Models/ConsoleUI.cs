@@ -4,10 +4,12 @@ namespace LexiconGarage.Models;
 
 public class ConsoleUI : IUI
 {
+    private IGarageHandler _garageHandler;
     private Dictionary<string, ConsoleCommand> commands = new Dictionary<string, ConsoleCommand>();
     private bool _programRunning;
-    public ConsoleUI()
+    public ConsoleUI(IGarageHandler garageHandler)
     {
+        _garageHandler = garageHandler;
         // Add test commands, Should be added externally with AddCommand later
         AddCommand("1", new ConsoleCommand(testCommand, "this is a testcommand"));
         AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));

@@ -9,7 +9,8 @@ using Microsoft.Extensions.Hosting;
 
 Console.WriteLine("Program startup");
     
-GarageHandler garageHandler = new GarageHandler();
-IUI ui = new ConsoleUI();
+IGarageHandler garageHandler = new GarageHandler();
+IUI ui = new ConsoleUI(garageHandler);
+//ui.AddCommand();
 ui.Run();
 
