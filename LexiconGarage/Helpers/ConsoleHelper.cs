@@ -40,8 +40,11 @@ public static class ConsoleHelper
             switch (input)
             {
                 case 'y': return true;
+                case 'Y': return true;
                 case 'j': return true;
+                case 'J': return true;
                 case 'n': return false;
+                case 'N': return false;
             }
         }
     }

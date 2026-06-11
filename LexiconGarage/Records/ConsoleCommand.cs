@@ -1,3 +1,3 @@
 namespace LexiconGarage.Records;
 
-public record ConsoleCommand( Action ConsoleAction,string description);
+public record ConsoleCommand( Action<string[]> ConsoleAction,string description);

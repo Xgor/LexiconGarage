@@ -57,9 +57,12 @@ public class ConsoleUI : IUI
 
     private void ReadCommand(string inputCommand)
     {
-        if (commands.TryGetValue(inputCommand,out ConsoleCommand value))
+        string[] splitCommands = inputCommand.Split();
+        
+        if (splitCommands.Length > 0 && commands.TryGetValue(splitCommands.First(),out ConsoleCommand value))
         {
-            value.ConsoleAction.Invoke();
+            
+            value.ConsoleAction.Invoke(splitCommands.Skip(1).ToArray());
         }
         else Console.WriteLine("Invalid command");
     }
@@ -68,32 +71,32 @@ public class ConsoleUI : IUI
     {
         AddCommand("3", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
         AddCommand("4", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
-        AddCommand("5", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number"));
+        AddCommand("find", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number. Can write search ABC123"));
         AddCommand("6", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
     }
     
 #endregion
 
 # region Commands
-    public void testCommand()
+    public void testCommand(string[] args = null)
     {
         Console.WriteLine("hello world");
     }
 
-    public void ExitProgram()
+    public void ExitProgram(string[] args = null)
     {
         Console.WriteLine("bye bye");
         _programRunning = false;
     }
 
-    public void AutoFillGarage()
+    public void AutoFillGarage(string[] args = null)
     {
         if(!_garageHandler.HasGarage()) AddGarageExistsCommands();;
         _garageHandler.AutoFillGarage();
         Console.WriteLine("Garage Filled");
     }
 
-    public void ListAllVehiclesInGarage()
+    public void ListAllVehiclesInGarage(string[] args = null)
     {
         foreach (string s in _garageHandler.GetAllVehicleInformation())
         {
@@ -101,19 +104,28 @@ public class ConsoleUI : IUI
         }
     }
 
-    public void CreateGarageCommand()
+    public void CreateGarageCommand(string[] args = null)
     {
         if (_garageHandler.HasGarage())
         {
             if (!ConsoleHelper.AskYNQuestion("Already have a garage, do you want to override it (Y/N) "))
                 return;
         }
-        _garageHandler.CreateNewGarage(ConsoleHelper.ReadAndParseUInt("How many spaces should be in the garage?"));
+
+        uint size;
+        if (args.Length > 0 && args[0] != null)
+        {
+            if (!uint.TryParse(args[0], out size))
+                return;
+        }
+        else size = ConsoleHelper.ReadAndParseUInt("How many spaces should be in the garage?");
+        _garageHandler.CreateNewGarage(size);
         
+        if(_garageHandler.HasGarage()) AddGarageExistsCommands();;
         Console.WriteLine("Garage created");
     }
 
-    public void ListGarageVechicleCountCommand()
+    public void ListGarageVechicleCountCommand(string[] args = null)
     {
         foreach (KeyValuePair<string, int> keyValuePair in _garageHandler.GetVehicleCount())
         {
@@ -121,15 +133,24 @@ public class ConsoleUI : IUI
         }
     }
 
-    private Vehicle? SearchByRegistrationNumber()
+    private Vehicle? SearchByRegistrationNumber(string[] args = null)
     {
-        string number = ConsoleHelper.ReadAndParseString("Please Enter Registration Number");
+        string number;
+        if (args.Length > 0 && args[0] != null)
+        {
+            Console.WriteLine("hello world");
+            number = args[0];
+        }
+        else
+        {
+            number = ConsoleHelper.ReadAndParseString("Please Enter Registration Number");
+        }
         return _garageHandler.FindByRegistrationPlate(number);
     }
 
-    private void SearchByRegistrationNumberCommand()
+    private void SearchByRegistrationNumberCommand(string[] args = null)
     {
-        Vehicle vehicle = SearchByRegistrationNumber();
+        Vehicle vehicle = SearchByRegistrationNumber(args);
         if (vehicle != null)
         {
             Console.WriteLine($"Found {vehicle}");
@@ -137,7 +158,7 @@ public class ConsoleUI : IUI
         else Console.WriteLine("Couldn't find vehicle with that registration number");
     }
 
-    public void RemoveVehicleCommand()
+    public void RemoveVehicleCommand(string[] args = null)
     {
         Vehicle vehicle = SearchByRegistrationNumber();
         if (vehicle != null)
