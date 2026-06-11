@@ -9,45 +9,53 @@ namespace LexiconGarage.Handlers;
 
 public class GarageHandler: IGarageHandler
 {
-    private Garage<Vehicle> _garage;
+    private Garage<Vehicle?>? _garage;
 
     // Might need major changes for multigarage support later
-    public void CreateNewGarage(int size)
+    public void CreateNewGarage(uint size)
     {
         _garage = new Garage<Vehicle>(size);
     }
 
+
     public int AddVehicleToCurrentGarage(Vehicle vehicle)
     {
+        if (!HasGarage()) throw new NullReferenceException();
         if (FindByRegistrationPlate(vehicle.RegistrationNumber) == null)
         {
-            _garage.AddToEmpty(vehicle);
+            //_garage?.AddToEmpty(vehicle);
+            
             return _garage.AddToEmpty(vehicle);
         }
         else
         {
-            
             throw new Exception("Not allowed to add vehicle with same registration number as already existing one");
         }
         return -1;
     }
 
-    public void RemoveFromCurrentGarage(string registrationNr)
+    public bool RemoveFromCurrentGarage(string registrationNr)
     {
-        throw new NotImplementedException();
+        if (!HasGarage()) throw new NullReferenceException();
+        return _garage?.Remove(registrationNr) ?? false;
     }
 
     public IEnumerable<string> GetAllVehicleInformation()
     {
-        foreach (Vehicle vehicle in _garage)
+        if (!HasGarage()) throw new NullReferenceException();
+        foreach (Vehicle? vehicle in _garage)
         {
+            if(vehicle == null) continue;
             yield return vehicle.ToString();
         }
     }
 
     public IEnumerable<KeyValuePair<string,int>> GetVehicleCount()
     {
-        return _garage.CountBy(vehicle => vehicle.GetType().ToString());
+        if (!HasGarage()) throw new NullReferenceException();
+        return _garage
+            .Select(vehicle => vehicle != null)
+            .CountBy(vehicle => vehicle.GetType().ToString());
     }
 
     public void AutoFillGarage()
@@ -67,10 +75,16 @@ public class GarageHandler: IGarageHandler
         }
     }
 
-    public Vehicle FindByRegistrationPlate(string registrationNr)
+    public bool HasGarage()
+    {
+        return _garage != null;
+    }
+
+    public Vehicle? FindByRegistrationPlate(string registrationNr)
     {
         return _garage.GetByRegistrationNumber(registrationNr);
     }
+    
 
 
     // public void GetVehicleTypes

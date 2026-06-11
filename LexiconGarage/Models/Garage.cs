@@ -7,7 +7,7 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     private T?[] _values;
     public int filledValueCount { get; private set; }
     
-    public Garage(int size)
+    public Garage(uint size)
     {
         _values = new T[size];
     }
@@ -45,7 +45,9 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
             if (_values[index] != null)
             {
                 filledValueCount--;
-                return _values[index];
+                T output = _values[index];
+                _values[index] = null;
+                return output;
             }
         }
         catch (Exception e)
@@ -62,6 +64,12 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
         return RemoveAndGet(index) != null;
     }
 
+    public bool Remove(string registrationNumber)
+    {
+        return RemoveAndGet(registrationNumber) != null;
+    }
+
+    
     /// <summary>
     /// Finds first empty space in _vechicles 
     /// </summary>
@@ -89,7 +97,8 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
 
     public T? GetByRegistrationNumber(string registrationNumber)
     {
-        return _values.FirstOrDefault(v => v.RegistrationNumber == registrationNumber);
+        if (IsEmpty) return null;
+        return _values.FirstOrDefault(v => string.Equals(v?.RegistrationNumber, registrationNumber, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public T GetByIndex(int index)

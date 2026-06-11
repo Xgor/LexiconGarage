@@ -4,13 +4,14 @@ namespace LexiconGarage.Interfaces;
 
 public interface IGarageHandler
 {
-   void CreateNewGarage(int size);
+   void CreateNewGarage(uint size);
    int AddVehicleToCurrentGarage(Vehicle vehicle);
-   void RemoveFromCurrentGarage(string registrationNr);
+   bool RemoveFromCurrentGarage(string registrationNr);
    IEnumerable<string> GetAllVehicleInformation();
    IEnumerable<KeyValuePair<string,int>> GetVehicleCount();
    void AutoFillGarage();
-   Vehicle FindByRegistrationPlate(string registrationNr);
+   bool HasGarage();
+   Vehicle? FindByRegistrationPlate(string registrationNr);
 
    
    //string[] GetVehicleTypeVariables(Vehicle variable);

@@ -1,5 +1,7 @@
+using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Records;
+using LexiconGarage.Vehicles;
 
 namespace LexiconGarage.Models;
 
@@ -12,8 +14,9 @@ public class ConsoleUI : IUI
     {
         _garageHandler = garageHandler;
         // Add test commands, Should be added externally with AddCommand later
-        AddCommand("1", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
-        AddCommand("2", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
+        AddCommand("1", new ConsoleCommand(CreateGarageCommand, "Create new Garage"));
+        AddCommand("2", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
+
         AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));
     }
 
@@ -41,6 +44,7 @@ public class ConsoleUI : IUI
         WriteAllCommands();
         string command = Console.ReadLine();
         ReadCommand(command);
+        Console.ReadKey();
     }
     
     public void WriteAllCommands()
@@ -59,6 +63,14 @@ public class ConsoleUI : IUI
         }
         else Console.WriteLine("Invalid command");
     }
+
+    private void AddGarageExistsCommands()
+    {
+        AddCommand("3", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
+        AddCommand("4", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
+        AddCommand("5", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number"));
+        AddCommand("6", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
+    }
     
 #endregion
 
@@ -76,6 +88,7 @@ public class ConsoleUI : IUI
 
     public void AutoFillGarage()
     {
+        if(!_garageHandler.HasGarage()) AddGarageExistsCommands();;
         _garageHandler.AutoFillGarage();
         Console.WriteLine("Garage Filled");
     }
@@ -86,6 +99,53 @@ public class ConsoleUI : IUI
         {
             Console.WriteLine(s);
         }
+    }
+
+    public void CreateGarageCommand()
+    {
+        if (_garageHandler.HasGarage())
+        {
+            if (!ConsoleHelper.AskYNQuestion("Already have a garage, do you want to override it (Y/N) "))
+                return;
+        }
+        _garageHandler.CreateNewGarage(ConsoleHelper.ReadAndParseUInt("How many spaces should be in the garage?"));
+        
+        Console.WriteLine("Garage created");
+    }
+
+    public void ListGarageVechicleCountCommand()
+    {
+        foreach (KeyValuePair<string, int> keyValuePair in _garageHandler.GetVehicleCount())
+        {
+            Console.WriteLine($"{keyValuePair.Key}: {keyValuePair.Value}");
+        }
+    }
+
+    private Vehicle? SearchByRegistrationNumber()
+    {
+        string number = ConsoleHelper.ReadAndParseString("Please Enter Registration Number");
+        return _garageHandler.FindByRegistrationPlate(number);
+    }
+
+    private void SearchByRegistrationNumberCommand()
+    {
+        Vehicle vehicle = SearchByRegistrationNumber();
+        if (vehicle != null)
+        {
+            Console.WriteLine($"Found {vehicle}");
+        }
+        else Console.WriteLine("Couldn't find vehicle with that registration number");
+    }
+
+    public void RemoveVehicleCommand()
+    {
+        Vehicle vehicle = SearchByRegistrationNumber();
+        if (vehicle != null)
+        {
+            _garageHandler.RemoveFromCurrentGarage(vehicle.RegistrationNumber);
+            Console.WriteLine($"Removed Vehicle {vehicle.RegistrationNumber} from garage.");
+        }
+        else Console.WriteLine("No vehicle found with that number to remove");
     }
     
     #endregion

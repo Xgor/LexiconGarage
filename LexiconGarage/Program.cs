@@ -9,8 +9,18 @@ using Microsoft.Extensions.Hosting;
 
 Console.WriteLine("Program startup");
     
-IGarageHandler garageHandler = new GarageHandler();
-IUI ui = new ConsoleUI(garageHandler);
+//IGarageHandler garageHandler = new GarageHandler();
+//IUI ui = new ConsoleUI(garageHandler);
 //ui.AddCommand();
-ui.Run();
+//ui.Run();
 
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
+        {
+            services.AddSingleton<IUI,ConsoleUI>();
+            services.AddSingleton<IGarageHandler,GarageHandler>();
+        })
+    .UseConsoleLifetime()
+    .Build();
+
+host.Services.GetRequiredService<IUI>().Run();
