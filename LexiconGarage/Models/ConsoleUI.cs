@@ -49,9 +49,11 @@ public class ConsoleUI : IUI
     
     public void WriteAllCommands()
     {
+        const int sizeForKeyField = 16;
         foreach (var command in commands)
         {
-            Console.WriteLine($"{command.Key}. {command.Value.description}");
+            string whitespaces = new string(' ', sizeForKeyField - command.Key.Length);
+            Console.WriteLine($"    {command.Key}{whitespaces}{command.Value.description}");
         }
     }
 
