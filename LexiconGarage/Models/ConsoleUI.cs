@@ -8,7 +8,8 @@ namespace LexiconGarage.Models;
 public class ConsoleUI : IUI
 {
     private IGarageHandler _garageHandler;
-    private Dictionary<string, ConsoleCommand> commands = new Dictionary<string, ConsoleCommand>();
+    private Dictionary<string, ConsoleCommand> menuCommands = new Dictionary<string, ConsoleCommand>();
+    private Dictionary<string, ConsoleCommand> selectVehicleCommands = new Dictionary<string, ConsoleCommand>();
     private bool _programRunning;
     public ConsoleUI(IGarageHandler garageHandler)
     {
@@ -16,13 +17,14 @@ public class ConsoleUI : IUI
         // Add test commands, Should be added externally with AddCommand later
         AddCommand("1", new ConsoleCommand(CreateGarageCommand, "Create new Garage"));
         AddCommand("2", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
-
         AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));
+        
+        fillSelectVehicleCommands();
     }
 
     public void AddCommand(string key, ConsoleCommand command)
     {
-        commands.Add(key,command);
+        menuCommands.Add(key,command);
     }
     
 #region Setup
@@ -34,6 +36,12 @@ public class ConsoleUI : IUI
             ProgramMainLoop();
         }
     }
+
+    private void fillSelectVehicleCommands()
+    {
+        selectVehicleCommands.Add("car", new ConsoleCommand(AddCar, "Add car"));
+        selectVehicleCommands.Add("airplane", new ConsoleCommand(AddAirplaine, "Add airplane"));
+    }
 #endregion
 
 #region MainLoop
@@ -41,13 +49,13 @@ public class ConsoleUI : IUI
     public void ProgramMainLoop()
     {
         Console.WriteLine("What do you want to do");
-        WriteAllCommands();
+        WriteCommands(menuCommands);
         string command = Console.ReadLine();
-        ReadCommand(command);
+        ReadCommand(command,menuCommands);
         Console.ReadKey();
     }
     
-    public void WriteAllCommands()
+    public void WriteCommands( Dictionary<string, ConsoleCommand> commands)
     {
         const int sizeForKeyField = 16;
         foreach (var command in commands)
@@ -57,7 +65,7 @@ public class ConsoleUI : IUI
         }
     }
 
-    private void ReadCommand(string inputCommand)
+    private void ReadCommand(string inputCommand, Dictionary<string,ConsoleCommand> commands)
     {
         string[] splitCommands = inputCommand.Split();
         
@@ -71,6 +79,7 @@ public class ConsoleUI : IUI
 
     private void AddGarageExistsCommands()
     {
+        AddCommand("add", new ConsoleCommand(AddVehicleCommand, "Add vehicle to garage"));
         AddCommand("3", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
         AddCommand("4", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
         AddCommand("find", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number. Can write search ABC123"));
@@ -80,25 +89,37 @@ public class ConsoleUI : IUI
 #endregion
 
 # region Commands
-    public void testCommand(string[] args = null)
+    public void AddVehicleCommand(string[]? args = null)
     {
-        Console.WriteLine("hello world");
+        WriteCommands(selectVehicleCommands);
+        string command = Console.ReadLine();
+        ReadCommand(command,selectVehicleCommands);
     }
 
-    public void ExitProgram(string[] args = null)
+    public void AddCar(string[]? args = null)
+    {
+        
+    }
+
+    public void AddAirplaine(string[]? args = null)
+    {
+        
+    }
+    
+    public void ExitProgram(string[]? args = null)
     {
         Console.WriteLine("bye bye");
         _programRunning = false;
     }
 
-    public void AutoFillGarage(string[] args = null)
+    public void AutoFillGarage(string[]? args = null)
     {
         if(!_garageHandler.HasGarage()) AddGarageExistsCommands();;
         _garageHandler.AutoFillGarage();
         Console.WriteLine("Garage Filled");
     }
 
-    public void ListAllVehiclesInGarage(string[] args = null)
+    public void ListAllVehiclesInGarage(string[]? args = null)
     {
         foreach (string s in _garageHandler.GetAllVehicleInformation())
         {
@@ -106,7 +127,7 @@ public class ConsoleUI : IUI
         }
     }
 
-    public void CreateGarageCommand(string[] args = null)
+    public void CreateGarageCommand(string[]? args = null)
     {
         if (_garageHandler.HasGarage())
         {
@@ -127,7 +148,7 @@ public class ConsoleUI : IUI
         Console.WriteLine("Garage created");
     }
 
-    public void ListGarageVechicleCountCommand(string[] args = null)
+    public void ListGarageVechicleCountCommand(string[]? args = null)
     {
         foreach (KeyValuePair<string, int> keyValuePair in _garageHandler.GetVehicleCount())
         {
@@ -135,7 +156,7 @@ public class ConsoleUI : IUI
         }
     }
 
-    private Vehicle? SearchByRegistrationNumber(string[] args = null)
+    private Vehicle? SearchByRegistrationNumber(string[]? args = null)
     {
         string number;
         if (args.Length > 0 && args[0] != null)
