@@ -87,6 +87,7 @@ public class ConsoleUI : IUI
         AddCommand("count", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
         AddCommand("find", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number. Can write search ABC123"));
         AddCommand("remove", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
+        AddCommand("filter", new ConsoleCommand(FilterSearch, "Search vehicles by filtering different values"));
     }
     
     
@@ -108,10 +109,13 @@ public class ConsoleUI : IUI
     public (string, uint, string) GetBaseVehicleInfo(string[]? args = null)
     {
         string registrationNumber = "";
-        do
+        while (true)
         {
             registrationNumber = ConsoleHelper.ReadAndParseString("Enter Registration Number");
-        } while (_garageHandler.RegistrationNumberIsInUse(registrationNumber)); // TODO add text when used registation is used
+            if (_garageHandler.RegistrationNumberIsInUse(registrationNumber))
+                break;
+            Console.WriteLine("Registration number is already in use. please try again.");
+        }
 
         uint wheelCount = ConsoleHelper.ReadAndParseUInt("Enter Wheel count");
         string colorName = ConsoleHelper.ReadAndParseString("Enter vehicle color");
@@ -275,6 +279,11 @@ public class ConsoleUI : IUI
             Console.WriteLine($"Removed Vehicle {vehicle.RegistrationNumber} from garage.");
         }
         else Console.WriteLine("No vehicle found with that number to remove");
+    }
+
+    public void FilterSearch(string[] args = null)
+    {
+        
     }
     
     #endregion

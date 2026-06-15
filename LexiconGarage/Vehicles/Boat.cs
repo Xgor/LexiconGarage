@@ -7,4 +7,9 @@ public class Boat : Vehicle
     {
         Length = length;
     }
+    public override string ToString()
+    {
+        string wheelString = WheelCount > 0? $" is amphibious with {WheelCount} wheels," : "";
+        return $"Boat {RegistrationNumber}{wheelString} is {Length} long and is {ColorName}";
+    }
 }

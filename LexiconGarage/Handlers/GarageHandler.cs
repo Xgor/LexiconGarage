@@ -54,8 +54,8 @@ public class GarageHandler: IGarageHandler
     {
         if (!HasGarage()) throw new NullReferenceException();
         return _garage
-            .Select(vehicle => vehicle != null)
-            .CountBy(vehicle => vehicle.GetType().ToString());
+            .Where(vehicle => vehicle != null)
+            .CountBy(vehicle => vehicle.GetType().Name);
     }
 
     public void AutoFillGarage()

@@ -13,4 +13,8 @@ public class Car : Vehicle
     {
         FuelType = fuelType;
     }  
+    public override string ToString()
+    {
+        return $"Car {RegistrationNumber} has {WheelCount} wheels and is {ColorName} and uses {Enum.GetName(FuelType)}";
+    }
 }

@@ -7,4 +7,8 @@ public class Bus : Vehicle
     {
         NumberOfSeats = numberOfSeats;
     }
+    public override string ToString()
+    {
+        return $"Bus {RegistrationNumber} has {NumberOfSeats} seats, {WheelCount} wheels that goes round and round and is {ColorName}";
+    }
 }

@@ -7,4 +7,9 @@ public class Motorcycle: Vehicle
     {
         CylinderVolume = cylinderVolume;
     }
+    
+    public override string ToString()
+    {
+        return $"Motorcycle {CylinderVolume}cc {RegistrationNumber} has {WheelCount} wheels and is {ColorName}";
+    }
 }

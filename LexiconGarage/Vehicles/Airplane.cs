@@ -7,4 +7,9 @@ public class Airplane:Vehicle
     {
         NumberOfEngines = numberOfEngines;
     }
+
+    public override string ToString()
+    {
+        return $"Plane {RegistrationNumber} has {WheelCount} wheels, {NumberOfEngines} engines and is {ColorName}";
+    }
 }

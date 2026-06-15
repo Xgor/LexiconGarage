@@ -15,9 +15,12 @@ public static class RandomVehicleHelper
 
     public static Vehicle GenerateRandomVehicle(string registrationNumber)
     {
-        return _rand.Next(2) switch
+        return _rand.Next(5) switch
         {
             1 => new Airplane(registrationNumber,RandUint(2,4)*2,"White",RandUint(2,4)),
+            2 => new Boat(registrationNumber,0,GenerateRandomColorName(),_rand.Next(100)*0.1f),
+            3 => new Motorcycle(registrationNumber,2,GenerateRandomColorName(),RandUint(150,1000)),
+            4 => new Bus(registrationNumber,4,GenerateRandomColorName(),RandUint(30,60)),
             _ => new Car(registrationNumber,4,GenerateRandomColorName(),Fuel.Gasoline)
         };
     }
