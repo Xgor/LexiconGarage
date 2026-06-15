@@ -15,9 +15,9 @@ public class ConsoleUI : IUI
     {
         _garageHandler = garageHandler;
         // Add test commands, Should be added externally with AddCommand later
-        AddCommand("1", new ConsoleCommand(CreateGarageCommand, "Create new Garage"));
-        AddCommand("2", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
         AddCommand("q", new ConsoleCommand(ExitProgram, "Exit program"));
+        AddCommand("create", new ConsoleCommand(CreateGarageCommand, "Create new Garage"));
+        AddCommand("autofill", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
         
         fillSelectVehicleCommands();
     }
@@ -41,6 +41,9 @@ public class ConsoleUI : IUI
     {
         selectVehicleCommands.Add("car", new ConsoleCommand(AddCar, "Add car"));
         selectVehicleCommands.Add("airplane", new ConsoleCommand(AddAirplaine, "Add airplane"));
+        selectVehicleCommands.Add("boat", new ConsoleCommand(AddBoat, "Add boat"));
+        selectVehicleCommands.Add("bus", new ConsoleCommand(AddBus, "Add bus"));
+        selectVehicleCommands.Add("motorcycle", new ConsoleCommand(AddMotorcycle, "Add motorcycle"));
     }
 #endregion
 
@@ -80,30 +83,112 @@ public class ConsoleUI : IUI
     private void AddGarageExistsCommands()
     {
         AddCommand("add", new ConsoleCommand(AddVehicleCommand, "Add vehicle to garage"));
-        AddCommand("3", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
-        AddCommand("4", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
+        AddCommand("list", new ConsoleCommand(ListAllVehiclesInGarage, "Print all Vehicles in garage"));
+        AddCommand("count", new ConsoleCommand(ListGarageVechicleCountCommand, "Get count for every vehicles"));
         AddCommand("find", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number. Can write search ABC123"));
-        AddCommand("6", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
+        AddCommand("remove", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
     }
+    
     
 #endregion
 
 # region Commands
     public void AddVehicleCommand(string[]? args = null)
     {
+        if (_garageHandler.IsGarageFull())
+        {
+            Console.WriteLine("Garage is full, please remove before you add more");
+            return;
+        }
         WriteCommands(selectVehicleCommands);
         string command = Console.ReadLine();
         ReadCommand(command,selectVehicleCommands);
     }
 
+    public (string, uint, string) GetBaseVehicleInfo(string[]? args = null)
+    {
+        string registrationNumber = "";
+        do
+        {
+            registrationNumber = ConsoleHelper.ReadAndParseString("Enter Registration Number");
+        } while (_garageHandler.RegistrationNumberIsInUse(registrationNumber)); // TODO add text when used registation is used
+
+        uint wheelCount = ConsoleHelper.ReadAndParseUInt("Enter Wheel count");
+        string colorName = ConsoleHelper.ReadAndParseString("Enter vehicle color");
+        return (registrationNumber, wheelCount, colorName);
+    }
+
     public void AddCar(string[]? args = null)
     {
-        
+        var baseInfo = GetBaseVehicleInfo(args);
+        Fuel? fuelType = null;
+        do
+        {
+            // TODO get fuel type
+            Console.WriteLine("Get fuel type");
+            Console.WriteLine("1. Gasoline");
+            Console.WriteLine("2. Diesel");
+            Console.WriteLine("3. Ethanol");
+            
+            switch (Console.ReadLine())
+            {
+                case "1": 
+                    fuelType = Fuel.Gasoline;
+                    break;
+                case "2": 
+                    fuelType = Fuel.Diesel;
+                    break;
+                case "3": 
+                    fuelType = Fuel.Ethanol;
+                    break;
+            } 
+            
+        } while (fuelType == null);
+
+        Car car = new Car(baseInfo.Item1, baseInfo.Item2, baseInfo.Item3, fuelType?? Fuel.Gasoline);
+        _garageHandler.AddVehicleToCurrentGarage(car);
+        Console.WriteLine($"{car} created");
     }
 
     public void AddAirplaine(string[]? args = null)
     {
+        var baseInfo = GetBaseVehicleInfo(args);
+
+        uint engines = ConsoleHelper.ReadAndParseUInt("How many engines does the airplane have?");
+        Airplane plane = new Airplane(baseInfo.Item1, baseInfo.Item2, baseInfo.Item3, engines);
+        _garageHandler.AddVehicleToCurrentGarage(plane);
+        Console.WriteLine($"{plane} created");
+    }
+    
+    public void AddBoat(string[]? args = null)
+    {
+        var baseInfo = GetBaseVehicleInfo(args);
+        float length = ConsoleHelper.ReadAndParseFloat("How long is the boat");
+
+        Boat boat = new Boat(baseInfo.Item1, baseInfo.Item2, baseInfo.Item3, length);
+        _garageHandler.AddVehicleToCurrentGarage(boat);
+        Console.WriteLine($"{boat} created");
+    }
+    
+    public void AddBus(string[]? args = null)
+    {
+        var baseInfo = GetBaseVehicleInfo(args);
+
+        uint seatCount = ConsoleHelper.ReadAndParseUInt("How many seats are on the bus");
+        Bus bus = new Bus(baseInfo.Item1, baseInfo.Item2, baseInfo.Item3, seatCount);
+        _garageHandler.AddVehicleToCurrentGarage(bus);
+        Console.WriteLine($"{bus} created");
+    }
+    
+    public void AddMotorcycle(string[]? args = null)
+    {
+        var baseInfo = GetBaseVehicleInfo(args);
+
+        uint cylinderSize = ConsoleHelper.ReadAndParseUInt("What is the cylinder size");
+        Motorcycle motorcycle = new Motorcycle(baseInfo.Item1, baseInfo.Item2, baseInfo.Item3, cylinderSize);
+        _garageHandler.AddVehicleToCurrentGarage(motorcycle);
         
+        Console.WriteLine($"{motorcycle} created");
     }
     
     public void ExitProgram(string[]? args = null)

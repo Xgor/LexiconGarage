@@ -3,10 +3,10 @@ using LexiconGarage.Interfaces;
 
 namespace LexiconGarage.Vehicles;
 
-public class Vehicle(string registrationNumber, int wheelCount,string colorName) :IVehicle
+public class Vehicle(string registrationNumber, uint wheelCount,string colorName) :IVehicle
 {
     public string RegistrationNumber { get; } = registrationNumber;
-    public int WheelCount { get; set; } = wheelCount;
+    public uint WheelCount { get; } = wheelCount;
     public string ColorName { get; set; } = colorName;
 
     public override string ToString()

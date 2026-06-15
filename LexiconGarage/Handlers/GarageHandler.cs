@@ -82,9 +82,21 @@ public class GarageHandler: IGarageHandler
 
     public Vehicle? FindByRegistrationPlate(string registrationNr)
     {
-        return _garage.GetByRegistrationNumber(registrationNr);
+        if (!HasGarage()) throw new NullReferenceException();
+        return _garage?.GetByRegistrationNumber(registrationNr);
     }
-    
+
+    public bool RegistrationNumberIsInUse(string registrationNr)
+    {
+        if (!HasGarage()) throw new NullReferenceException();
+        return null != _garage?.GetByRegistrationNumber(registrationNr);
+    }
+
+    public bool IsGarageFull()
+    {
+        if (!HasGarage()) throw new NullReferenceException();
+        return _garage.IsFull;
+    }
 
 
     // public void GetVehicleTypes

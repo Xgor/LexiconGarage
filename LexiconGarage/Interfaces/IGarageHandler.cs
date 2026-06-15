@@ -12,7 +12,8 @@ public interface IGarageHandler
    void AutoFillGarage();
    bool HasGarage();
    Vehicle? FindByRegistrationPlate(string registrationNr);
+   bool RegistrationNumberIsInUse(string registrationNr);
+   bool IsGarageFull();
 
-   
    //string[] GetVehicleTypeVariables(Vehicle variable);
 }

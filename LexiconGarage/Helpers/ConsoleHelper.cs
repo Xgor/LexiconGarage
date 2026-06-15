@@ -19,6 +19,18 @@ public static class ConsoleHelper
         return output;
     }
     
+    public static float ReadAndParseFloat(string text)
+    {
+        float output;
+        string line = "";
+        do
+        {
+            Console.WriteLine(text);
+            line = Console.ReadLine() ?? String.Empty;
+        } while (!float.TryParse(line,out output));
+        return output;
+    }
+
     public static string ReadAndParseString(string text)
     {
         CultureInfo cultures = new CultureInfo("en-US");

@@ -4,6 +4,6 @@ public interface IVehicle
 {
 
     string RegistrationNumber { get; }
-    int WheelCount { get; }
+    uint WheelCount { get; }
     string ColorName{ get; set; }
 }
