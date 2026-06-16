@@ -7,16 +7,24 @@ namespace LexiconGarage.Helpers;
 public static class ConsoleHelper
 {
     //where T: IBinaryInteger<T> 
-    public static uint ReadAndParseUInt(string text)
+    public static uint ReadAndParseUInt(string text,uint min = 0)
     {
         uint output;
         string line = "";
-        do
+        while (true)
         {
+            
             Console.WriteLine(text);
             line = Console.ReadLine() ?? String.Empty;
-        } while (!uint.TryParse(line,out output));
-        return output;
+            if (!uint.TryParse(line, out output))
+            {
+                if(output < min)
+                    return output;
+                else
+                    Console.WriteLine("Number is lower than allowed parameters");
+            }
+            else Console.WriteLine("Failed to parse, please add positive integer");
+        } 
     }
     
     public static float ReadAndParseFloat(string text)

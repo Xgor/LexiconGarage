@@ -1,25 +1,11 @@
-using System.Reflection;
-using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Records;
-using LexiconGarage.Vehicles;
 
 namespace LexiconGarage.Models;
 
 public class ConsoleUI : IUI
 {
-    private IGarageHandler _garageHandler;
     private bool _programRunning;
-    public ConsoleUI(IGarageHandler garageHandler)
-    {
-        _garageHandler = garageHandler;
-        // Add test commands, Should be added externally with AddCommand later
-        
-      //  fillSelectVehicleCommands();
-    }
-
-    
-  //  #region Setup
 
     #region MainLoop
 
@@ -57,6 +43,6 @@ public class ConsoleUI : IUI
 
         return false;
     }
-#endregion
+    #endregion
    
 }

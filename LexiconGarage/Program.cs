@@ -1,5 +1,4 @@
-﻿
-using System.Net;
+﻿using System.Net;
 using LexiconGarage;
 using LexiconGarage.Handlers;
 using LexiconGarage.Interfaces;
@@ -16,11 +15,11 @@ Console.WriteLine("Program startup");
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
-        {
-            services.AddSingleton<IUI,ConsoleUI>();
-            services.AddSingleton<IGarageHandler,GarageHandler>();
-            services.AddSingleton<IProgramManager, ProgramManager>();
-        })
+    {
+        services.AddSingleton<IUI,ConsoleUI>();
+        services.AddSingleton<IGarageHandler,GarageHandler>();
+        services.AddSingleton<IProgramManager, ProgramManager>();
+    })
     .UseConsoleLifetime()
     .Build();
 

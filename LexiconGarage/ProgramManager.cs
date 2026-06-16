@@ -19,6 +19,7 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
     public void Run()
     {
         SetupMainMenuCommands();
+        fillSelectVehicleCommands();
         _programRunning = true;
         while (_programRunning)
         {
@@ -28,7 +29,6 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
    
     private void SetupMainMenuCommands()
     {
-        limitedMenuCommands.Add("q", new ConsoleCommand(ExitProgram, "Exit program"));
         limitedMenuCommands.Add("create", new ConsoleCommand(CreateGarageCommand, "Create new Garage"));
         limitedMenuCommands.Add("autofill", new ConsoleCommand(AutoFillGarage, "Auto Fill Garage"));
         menuCommands = new Dictionary<string, ConsoleCommand>(limitedMenuCommands);
@@ -38,6 +38,10 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
         menuCommands.Add("find", new ConsoleCommand(SearchByRegistrationNumberCommand, "Search vehicle by registration number. Can write search ABC123"));
         menuCommands.Add("remove", new ConsoleCommand(RemoveVehicleCommand,"Remove vehicle by registration number")); 
         menuCommands.Add("filter", new ConsoleCommand(FilterSearch, "Search vehicles by filtering different values"));
+        // Set quit to end on all commands
+        limitedMenuCommands.Add("quit", new ConsoleCommand(ExitProgram, "Exit program"));
+        menuCommands.Add("quit", new ConsoleCommand(ExitProgram, "Exit program"));
+        
     }
     
 
@@ -54,15 +58,12 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
     #endregion
 
     #region MainLoop
-
-   
-
     public void ProgramMainLoop()
     {
         if (_garageHandler.HasGarage())
-            _ui.CommandMenu(menuCommands, "What do you want to do");
+            _ui.CommandMenu(menuCommands, "What do you want to do in garages");
         else
-            _ui.CommandMenu(limitedMenuCommands, "What do you want to do");
+            _ui.CommandMenu(limitedMenuCommands, "What do you want to do with garages");
       
         Console.ReadKey();
     }
@@ -194,22 +195,27 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
 
     public void CreateGarageCommand(string[]? args = null)
     {
+        
+        uint size = 0;
+        if (args.Length > 0 && args[0] != null)
+        {
+            if (!uint.TryParse(args[0], out size))
+            {
+                Console.WriteLine("Invalid size");
+                return;
+            }
+        }
         if (_garageHandler.HasGarage())
         {
             if (!ConsoleHelper.AskYNQuestion("Already have a garage, do you want to override it (Y/N) "))
                 return;
         }
-
-        uint size;
-        if (args.Length > 0 && args[0] != null)
-        {
-            if (!uint.TryParse(args[0], out size))
-                return;
-        }
-        else size = ConsoleHelper.ReadAndParseUInt("How many spaces should be in the garage?");
+        
+        if(size == 0) size = ConsoleHelper.ReadAndParseUInt("How many spaces should be in the garage?",1);
+        
         _garageHandler.CreateNewGarage(size);
         
-        Console.WriteLine("Garage created");
+        Console.WriteLine($"Garage created with {size} spaces");
     }
 
     public void ListGarageVechicleCountCommand(string[]? args = null)
@@ -262,14 +268,14 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
         PropertyInfo[] properties = typeof(Vehicle).GetRuntimeProperties().ToArray();
         for (int i = 0; i < properties.Length; i++)
         {
-            Console.WriteLine($"{i}. {properties[i]}");
+            Console.WriteLine($"{i}. {properties[i].Name}");
         }
 
         uint input = ConsoleHelper.ReadAndParseUInt("What will you filter on");
         if (input < properties.Length)
         {
             PropertyInfo property = properties[input];
-            string attribute = ConsoleHelper.ReadAndParseString("What value to filter with");
+            string attribute = ConsoleHelper.ReadAndParseString($"In {property.Name} what value to filter by ({property.PropertyType})");
             filterList.Add(property.Name,attribute);
         }
         
