@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Models;
@@ -10,13 +11,13 @@ namespace LexiconGarage.Handlers;
 public class GarageHandler: IGarageHandler
 {
     private Garage<Vehicle?>? _garage;
-
+    
     // Might need major changes for multigarage support later
     public void CreateNewGarage(uint size)
     {
         _garage = new Garage<Vehicle>(size);
     }
-
+    
 
     public int AddVehicleToCurrentGarage(Vehicle vehicle)
     {
@@ -25,7 +26,7 @@ public class GarageHandler: IGarageHandler
         {
             //_garage?.AddToEmpty(vehicle);
             
-            return _garage.AddToEmpty(vehicle);
+            return _garage!.AddToEmpty(vehicle);
         }
         else
         {
@@ -43,7 +44,7 @@ public class GarageHandler: IGarageHandler
     public IEnumerable<string> GetAllVehicleInformation()
     {
         if (!HasGarage()) throw new NullReferenceException();
-        foreach (Vehicle? vehicle in _garage)
+        foreach (Vehicle? vehicle in _garage!)
         {
             if(vehicle == null) continue;
             yield return vehicle.ToString();
@@ -53,9 +54,9 @@ public class GarageHandler: IGarageHandler
     public IEnumerable<KeyValuePair<string,int>> GetVehicleCount()
     {
         if (!HasGarage()) throw new NullReferenceException();
-        return _garage
+        return _garage!
             .Where(vehicle => vehicle != null)
-            .CountBy(vehicle => vehicle.GetType().Name);
+            .CountBy(vehicle => vehicle!.GetType().Name);
     }
 
     public void AutoFillGarage()
@@ -95,9 +96,18 @@ public class GarageHandler: IGarageHandler
     public bool IsGarageFull()
     {
         if (!HasGarage()) throw new NullReferenceException();
-        return _garage.IsFull;
+        return _garage!.IsFull;
     }
 
+    public IEnumerable<Vehicle> FilterBy(string property, string attribute)
+    {
+        if (!HasGarage()) throw new NullReferenceException();
+        var v = _garage!.AsEnumerable()
+            .Select(vehicle => vehicle?.GetType().GetProperty(property).GetValue(vehicle).ToString());
+        return _garage!.AsEnumerable()
+            .OfType<Vehicle>()
+            .Where(vehicle => vehicle.GetType().GetProperty(property).GetValue(vehicle).ToString().Equals(attribute));
+    }
 
     // public void GetVehicleTypes
 }

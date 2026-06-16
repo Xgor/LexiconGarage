@@ -1,8 +1,9 @@
 using System.Collections;
+using System.Reflection;
 using LexiconGarage.Vehicles;
 namespace LexiconGarage.Models;
 
-public class Garage<T>:IEnumerable<T> where T:Vehicle
+public class Garage<T>:IEnumerable<T> where T:Vehicle?
 {
     private T?[] _values;
     public int filledValueCount { get; private set; }
@@ -105,12 +106,7 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     {
         return _values[index];
     }
-/*
-    public T this[int i]
-    {
-        get => _vehicles[i];
-        // set => _vehicles[i] = value;
-    } */
+    
     
     public IEnumerator<T> GetEnumerator()
     {
@@ -124,4 +120,6 @@ public class Garage<T>:IEnumerable<T> where T:Vehicle
     {
         return _values.GetEnumerator();
     }
+    
+    
 }

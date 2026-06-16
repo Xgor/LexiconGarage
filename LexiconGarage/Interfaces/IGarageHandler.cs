@@ -14,6 +14,6 @@ public interface IGarageHandler
    Vehicle? FindByRegistrationPlate(string registrationNr);
    bool RegistrationNumberIsInUse(string registrationNr);
    bool IsGarageFull();
-
+   public IEnumerable<Vehicle> FilterBy(string property, string attribute);
    //string[] GetVehicleTypeVariables(Vehicle variable);
 }

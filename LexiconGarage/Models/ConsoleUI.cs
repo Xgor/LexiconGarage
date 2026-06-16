@@ -1,3 +1,4 @@
+using System.Reflection;
 using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Records;
@@ -283,7 +284,30 @@ public class ConsoleUI : IUI
 
     public void FilterSearch(string[] args = null)
     {
-        
+        Console.WriteLine("Filter by:");
+        PropertyInfo[] properties = typeof(Vehicle).GetRuntimeProperties().ToArray();
+        for (int i = 0; i < properties.Length; i++)
+        {
+            Console.WriteLine($"{i}. {properties[i]}");
+        }
+
+        uint input = ConsoleHelper.ReadAndParseUInt("What will you filter on");
+        if (input < properties.Length)
+        {
+            PropertyInfo property = properties[input];
+            string attribute = ConsoleHelper.ReadAndParseString("What value to filter with");
+
+            var result = _garageHandler.FilterBy(property.Name, attribute);
+            foreach (Vehicle vehicle in result)
+            {
+                Console.WriteLine(vehicle);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Not a proprety to filter on, going back to main menu");
+            return;
+        }
     }
     
     #endregion
