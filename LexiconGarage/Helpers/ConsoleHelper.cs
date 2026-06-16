@@ -45,10 +45,11 @@ public static class ConsoleHelper
 
     public static bool AskYNQuestion(string text)
     {
-        Console.WriteLine(text);
+        Console.Write($"{text} (y/n): ");
         while (true)
         {
             char input = Console.ReadKey().KeyChar;
+            Console.WriteLine();
             switch (input)
             {
                 case 'y': return true;
@@ -59,6 +60,7 @@ public static class ConsoleHelper
                 case 'N': return false;
             }
         }
+        
     }
     
 }
