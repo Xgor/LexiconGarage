@@ -19,8 +19,9 @@ var host = Host.CreateDefaultBuilder(args)
         {
             services.AddSingleton<IUI,ConsoleUI>();
             services.AddSingleton<IGarageHandler,GarageHandler>();
+            services.AddSingleton<IProgramManager, ProgramManager>();
         })
     .UseConsoleLifetime()
     .Build();
 
-host.Services.GetRequiredService<IUI>().Run();
+host.Services.GetRequiredService<IProgramManager>().Run();
