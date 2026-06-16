@@ -282,7 +282,7 @@ public class ConsoleUI : IUI
         else Console.WriteLine("No vehicle found with that number to remove");
     }
 
-    public void FilterSearch(string[] args = null)
+    private void AddToFilterList(ref Dictionary<string, string> filterList)
     {
         Console.WriteLine("Filter by:");
         PropertyInfo[] properties = typeof(Vehicle).GetRuntimeProperties().ToArray();
@@ -296,18 +296,30 @@ public class ConsoleUI : IUI
         {
             PropertyInfo property = properties[input];
             string attribute = ConsoleHelper.ReadAndParseString("What value to filter with");
+            filterList.Add(property.Name,attribute);
+        }
+        
+    }
+    
+    public void FilterSearch(string[] args = null)
+    {
+        Dictionary<string, string> filterList = new Dictionary<string, string>();
 
-            var result = _garageHandler.FilterBy(property.Name, attribute);
+        do
+        {
+            AddToFilterList(ref filterList);
+        } while (ConsoleHelper.AskYNQuestion("Want to add another filter"));
+        
+        
+        var result = _garageHandler.FilterBy(filterList);
+        if (result.Count() > 0)
+        {
             foreach (Vehicle vehicle in result)
             {
                 Console.WriteLine(vehicle);
             }
         }
-        else
-        {
-            Console.WriteLine("Not a proprety to filter on, going back to main menu");
-            return;
-        }
+        else Console.WriteLine("Nothing matching these filter conditions.");
     }
     
     #endregion

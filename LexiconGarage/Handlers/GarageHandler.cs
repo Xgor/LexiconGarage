@@ -99,15 +99,15 @@ public class GarageHandler: IGarageHandler
         return _garage!.IsFull;
     }
 
-    public IEnumerable<Vehicle> FilterBy(string property, string attribute)
+    public IEnumerable<Vehicle> FilterBy(Dictionary<string, string> propertyAttributes)
     {
         if (!HasGarage()) throw new NullReferenceException();
-        var v = _garage!.AsEnumerable()
-            .Select(vehicle => vehicle?.GetType().GetProperty(property).GetValue(vehicle).ToString());
-        return _garage!.AsEnumerable()
-            .OfType<Vehicle>()
-            .Where(vehicle => vehicle.GetType().GetProperty(property).GetValue(vehicle).ToString().Equals(attribute));
+        IEnumerable<Vehicle> output = _garage.AsEnumerable();
+        foreach (KeyValuePair<string, string> propertyAttribute in propertyAttributes)
+        {
+            output = output.FilterByPropertyAttribute(propertyAttribute.Key, propertyAttribute.Value);
+        }
+        return output;
     }
 
-    // public void GetVehicleTypes
 }
