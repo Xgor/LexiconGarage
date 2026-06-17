@@ -16,9 +16,9 @@ public static class ConsoleHelper
             
             Console.WriteLine(text);
             line = Console.ReadLine() ?? String.Empty;
-            if (!uint.TryParse(line, out output))
+            if (uint.TryParse(line, out output))
             {
-                if(output < min)
+                if(output >= min)
                     return output;
                 else
                     Console.WriteLine("Number is lower than allowed parameters");

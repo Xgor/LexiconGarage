@@ -105,7 +105,11 @@ public class GarageHandler: IGarageHandler
         IEnumerable<Vehicle> output = _garage.AsEnumerable();
         foreach (KeyValuePair<string, string> propertyAttribute in propertyAttributes)
         {
-            output = output.FilterByPropertyAttribute(propertyAttribute.Key, propertyAttribute.Value);
+            if (propertyAttribute.Key == "type")
+            {
+                output = output.Where(vehicle => vehicle.GetType().Name == propertyAttribute.Value.ToLower());
+            }
+            else output = output.FilterByPropertyAttribute(propertyAttribute.Key, propertyAttribute.Value);
         }
         return output;
     }
