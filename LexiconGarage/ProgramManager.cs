@@ -240,7 +240,7 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
     private Vehicle? SearchByRegistrationNumber(string[]? args = null)
     {
         string number;
-        if (args.Length > 0 && args[0] != null)
+        if (args != null &&args[0] != null && args.Length > 0)
         {
             number = args[0];
         }
@@ -311,8 +311,6 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
         
     }
     
-    
-    
     public void FilterSearch(string[] args = null)
     {
         Dictionary<string, string> filterList = new Dictionary<string, string>();
@@ -321,7 +319,6 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
         {
             AddToFilterList(ref filterList);
         } while (ConsoleHelper.AskYNQuestion("Want to add another filter"));
-        
         
         var result = _garageHandler.FilterBy(filterList);
         if (result.Count() > 0)
