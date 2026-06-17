@@ -294,8 +294,8 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
 
         if (input == properties.Length)
         {
-            Regex ex = new Regex("Car|Motorcycle|Airplane|Boat|Bus");
-            
+            Regex ex = new Regex("Car|Motorcycle|Airplane|Boat|Bus",RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+     
             string attribute = "";
             while (true)
             {
