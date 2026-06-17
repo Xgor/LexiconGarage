@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using LexiconGarage.Helpers;
 using LexiconGarage.Interfaces;
 using LexiconGarage.Records;
@@ -14,7 +15,7 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
     private Dictionary<string, ConsoleCommand> limitedMenuCommands = new Dictionary<string, ConsoleCommand>();
     private Dictionary<string, ConsoleCommand> menuCommands = new Dictionary<string, ConsoleCommand>();
     private Dictionary<string, ConsoleCommand> selectVehicleCommands = new Dictionary<string, ConsoleCommand>();
-   
+    
     #region setup
     public void Run()
     {
@@ -280,6 +281,7 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
             Console.WriteLine($"{i}. {properties[i].Name}");
         }
 
+        Console.WriteLine($"{properties.Length}. Type");
 
         
         uint input = ConsoleHelper.ReadAndParseUInt("What will you filter on");
@@ -292,12 +294,24 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
 
         if (input == properties.Length)
         {
+            Regex ex = new Regex("Car|Motorcycle|Airplane|Boat|Bus");
             
-            string attribute = ConsoleHelper.ReadAndParseString($"What type do you want to filter by (Car, Motorcycle, Airplane,Motorcycle,Bus,Boat)");
+            string attribute = "";
+            while (true)
+            {
+                
+                attribute = ConsoleHelper.ReadAndParseString($"What type do you want to filter by (Car, Motorcycle, Airplane,Motorcycle,Bus,Boat)");
+                if (ex.IsMatch(attribute))
+                   break;
+                Console.WriteLine("Not a match, try again");
+            }
+            
             filterList.Add("type",attribute.ToLower());
         }
         
     }
+    
+    
     
     public void FilterSearch(string[] args = null)
     {

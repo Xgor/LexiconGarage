@@ -103,11 +103,12 @@ public class GarageHandler: IGarageHandler
     {
         if (!HasGarage()) throw new NullReferenceException();
         IEnumerable<Vehicle> output = _garage.AsEnumerable();
+        // Maybe force case insensitive to all not just type
         foreach (KeyValuePair<string, string> propertyAttribute in propertyAttributes)
         {
             if (propertyAttribute.Key == "type")
             {
-                output = output.Where(vehicle => vehicle.GetType().Name == propertyAttribute.Value.ToLower());
+                output = output.Where(vehicle => vehicle.GetType().Name.ToLower() == propertyAttribute.Value.ToLower());
             }
             else output = output.FilterByPropertyAttribute(propertyAttribute.Key, propertyAttribute.Value);
         }
