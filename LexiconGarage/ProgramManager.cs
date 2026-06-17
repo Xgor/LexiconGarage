@@ -208,9 +208,9 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
     {
         
         uint size = 0;
-        if (args.Length > 0 && args[0] != null)
+        if (args?.Length > 0 && args?[0] != null)
         {
-            if (!uint.TryParse(args[0], out size))
+            if (!uint.TryParse(args?[0], out size))
             {
                 Console.WriteLine("Invalid size");
                 return;
@@ -239,19 +239,15 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
 
     private Vehicle? SearchByRegistrationNumber(string[]? args = null)
     {
-        string number;
-        if (args != null &&args[0] != null && args.Length > 0)
-        {
-            number = args[0];
-        }
-        else
+        string number = args?[0] ?? String.Empty;
+        if (number.IsWhiteSpace())
         {
             number = ConsoleHelper.ReadAndParseString("Please Enter Registration Number");
         }
         return _garageHandler.FindByRegistrationPlate(number);
     }
 
-    private void SearchByRegistrationNumberCommand(string[] args = null)
+    private void SearchByRegistrationNumberCommand(string[]? args = null)
     {
         Vehicle vehicle = SearchByRegistrationNumber(args);
         if (vehicle != null)
@@ -261,9 +257,9 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
         else Console.WriteLine("Couldn't find vehicle with that registration number");
     }
 
-    public void RemoveVehicleCommand(string[] args = null)
+    public void RemoveVehicleCommand(string[]? args = null)
     {
-        Vehicle vehicle = SearchByRegistrationNumber();
+        Vehicle vehicle = SearchByRegistrationNumber(args);
         if (vehicle != null)
         {
             _garageHandler.RemoveFromCurrentGarage(vehicle.RegistrationNumber);

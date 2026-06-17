@@ -8,10 +8,6 @@ using Microsoft.Extensions.Hosting;
 
 Console.WriteLine("Program startup");
     
-//IGarageHandler garageHandler = new GarageHandler();
-//IUI ui = new ConsoleUI(garageHandler);
-//ui.AddCommand();
-//ui.Run();
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>

@@ -14,7 +14,11 @@ public static class MyExtensions
     {
         foreach(T value in data)
         {
-            if (value.GetType().GetProperty(property).GetValue(value).ToString().Equals(attribute)) yield return value;
+            if (value.GetType()
+                .GetProperty(property)
+                .GetValue(value)
+                .ToString()
+                .Equals(attribute)) yield return value;
         }
     }
 }
