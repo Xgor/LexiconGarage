@@ -108,7 +108,7 @@ public class GarageHandler: IGarageHandler
         {
             if (propertyAttribute.Key == "type")
             {
-                output = output.Where(vehicle => vehicle.GetType().Name.ToLower() == propertyAttribute.Value.ToLower());
+                output = output.Where(vehicle => string.Equals(vehicle.GetType().Name, propertyAttribute.Value, StringComparison.CurrentCultureIgnoreCase));
             }
             else output = output.FilterByPropertyAttribute(propertyAttribute.Key, propertyAttribute.Value);
         }

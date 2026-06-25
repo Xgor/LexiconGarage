@@ -56,16 +56,13 @@ public static class ConsoleHelper
         Console.Write($"{text} (y/n): ");
         while (true)
         {
-            char input = Console.ReadKey().KeyChar;
+            ConsoleKey input = Console.ReadKey().Key;
             Console.WriteLine();
             switch (input)
             {
-                case 'y': return true;
-                case 'Y': return true;
-                case 'j': return true;
-                case 'J': return true;
-                case 'n': return false;
-                case 'N': return false;
+                case ConsoleKey.Y: return true;
+                case ConsoleKey.J: return true;
+                case ConsoleKey.N: return false;
             }
         }
         

@@ -10,6 +10,6 @@ public class Boat : Vehicle
     public override string ToString()
     {
         string wheelString = WheelCount > 0? $" is amphibious with {WheelCount} wheels," : "";
-        return $"Boat {RegistrationNumber}{wheelString} is {Length} long and is {ColorName}";
+        return $"Boat {RegistrationNumber}{wheelString} is {Length}m long and is {ColorName}";
     }
 }

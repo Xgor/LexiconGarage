@@ -239,8 +239,8 @@ public class ProgramManager(IGarageHandler garageHandler, IUI ui) : IProgramMana
 
     private Vehicle? SearchByRegistrationNumber(string[]? args = null)
     {
-        string number = args?[0] ?? String.Empty;
-        if (number.IsWhiteSpace())
+        string? number = args == null ? args?[0] : String.Empty;
+        if (number == null || number.IsWhiteSpace())
         {
             number = ConsoleHelper.ReadAndParseString("Please Enter Registration Number");
         }
